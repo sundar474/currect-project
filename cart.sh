@@ -60,7 +60,7 @@ npm install &>>$LOGFILE
 VALIDATE $? "Installing dependencies"
 
 # give full path of cart.service because we are inside /app
-cp /home/centos/roboshop-shell-scripting/cart.service /etc/systemd/system/cart.service &>>$LOGFILE
+cp /home/centos/currect-project/cart.service /etc/systemd/system/cart.service &>>$LOGFILE
 
 VALIDATE $? "copying cart.service"
 
