@@ -8,7 +8,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-MYSQL_HOST=mysql.sundarit.online
+MYSQL_HOST=172.31.29.134
 
 VALIDATE(){
    if [ $1 -ne 0 ]
@@ -62,7 +62,7 @@ VALIDATE $? "Packaging shipping"
 mv target/shipping-1.0.jar shipping.jar &>> $LOGFILE
 VALIDATE $? "Renaming the artifact"
 
-cp /home/centos/roboshop-shell-scripting/shipping.service /etc/systemd/system/shipping.service &>> $LOGFILE
+cp /home/centos/currect-project/shipping.service /etc/systemd/system/shipping.service &>> $LOGFILE
 VALIDATE $? "Copying service file"
 
 systemctl daemon-reload &>> $LOGFILE
@@ -77,15 +77,18 @@ VALIDATE $? "Starting shipping"
 dnf install mysql -y &>> $LOGFILE
 VALIDATE $? "Installing MySQL"
 
-mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e "use cities" &>> $LOGFILE
-if [ $? -ne 0 ]
-then
-    echo "Schema is ... LOADING"
-    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/schema/shipping.sql &>> $LOGFILE
-    VALIDATE $? "Loading schema"
-else
-    echo -e "Schema already exists... $Y SKIPPING $N"
-fi
+mysql -h -uroot 172.31.29.134 -pRoboShop@1 < /app/db/schema.sql &>> $LOGFILE
+
+VALIDATE $? "validating scema"
+
+mysql -h -uroot 172.31.29.134 -pRoboShop@1 < /app/db/app-user.sql &>> $LOGFILE
+
+VALIDATE $? "validating user information"
+
+mysql -h -uroot 172.31.29.134 -pRoboShop@1 < /app/db/master-data.sql &>> $LOGFILE
+
+VALIDATE $? "validating master data"
 
 systemctl restart shipping
+
 VALIDATE $? "Restarted Shipping"
