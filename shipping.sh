@@ -77,15 +77,15 @@ VALIDATE $? "Starting shipping"
 dnf install mysql -y &>> $LOGFILE
 VALIDATE $? "Installing MySQL"
 
-mysql -h -uroot mysql.sadhusundar.xyz -pRoboShop@1 < /app/db/schema.sql &>> $LOGFILE
+mysql -h -uroot $MYSQL_HOST -pRoboShop@1 < /app/db/schema.sql &>> $LOGFILE
 
 VALIDATE $? "validating scema"
 
-mysql -h -uroot mysql.sadhusundar.xyz -pRoboShop@1 < /app/db/app-user.sql &>> $LOGFILE
+mysql -h -uroot $MYSQL_HOST -pRoboShop@1 < /app/db/app-user.sql &>> $LOGFILE
 
 VALIDATE $? "validating user information"
 
-mysql -h -uroot mysql.sadhusundar.xyz -pRoboShop@1 < /app/db/master-data.sql &>> $LOGFILE
+mysql -h -uroot $MYSQL_HOST -pRoboShop@1 < /app/db/master-data.sql &>> $LOGFILE
 
 VALIDATE $? "validating master data"
 
