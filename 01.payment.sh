@@ -28,6 +28,7 @@ else
 fi
 
 dnf install python3.11 gcc python3-devel -y &>> $LOGFILE
+sudo yum install python3.11-pip -y
 VALIDATE $? "Installing Python"
 
 id roboshop &>> $LOGFILE
@@ -54,7 +55,8 @@ VALIDATE $? "Moving to app directory"
 unzip /tmp/payment.zip &>> $LOGFILE
 VALIDATE $? "Extracting payment application"
 
-pip3.11 install -r requirements.txt 
+
+sudo pip3.11 install -r requirements.txt 
 VALIDATE $? "Installing dependencies"
 
 cp /home/centos/currect-project/payment.service /etc/systemd/system/payment.service &>> $LOGFILE
