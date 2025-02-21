@@ -46,16 +46,16 @@ for i in service1 service2 web service3; do
 
     aws route53 change-resource-record-sets --hosted-zone-id Z0824164232GERUT9YSUC --change-batch '
     {
-        "Changes": [{
+            "Changes": [{
             "Action": "CREATE",
-            "ResourceRecordSet": {
-                "Name": "'$i.$DOMAIN_NAME'",
-                "Type": "A",
-                "TTL": 1,
-                "ResourceRecords": [{ "Value": "'$IP_ADDRESS'"}]
-            }
-        }]
-    }'
+                        "ResourceRecordSet": {
+                            "Name": "'$i.$DOMAIN_NAME'",
+                            "Type": "A",
+                            "TTL": 1,
+                            "ResourceRecords": [{ "Value": "'$IP_ADDRESS'"}]
+                        }}]
+    }
+    '
 done
 
 # imporvement
