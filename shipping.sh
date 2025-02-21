@@ -8,7 +8,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-MYSQL_HOST=172.31.29.134
+MYSQL_HOST=mysql.sadhusundar.xyz
 
 VALIDATE(){
    if [ $1 -ne 0 ]
@@ -77,15 +77,15 @@ VALIDATE $? "Starting shipping"
 dnf install mysql -y &>> $LOGFILE
 VALIDATE $? "Installing MySQL"
 
-mysql -h -uroot 172.31.29.134 -pRoboShop@1 < /app/db/schema.sql &>> $LOGFILE
+mysql -h -uroot mysql.sadhusundar.xyz -pRoboShop@1 < /app/db/schema.sql &>> $LOGFILE
 
 VALIDATE $? "validating scema"
 
-mysql -h -uroot 172.31.29.134 -pRoboShop@1 < /app/db/app-user.sql &>> $LOGFILE
+mysql -h -uroot mysql.sadhusundar.xyz -pRoboShop@1 < /app/db/app-user.sql &>> $LOGFILE
 
 VALIDATE $? "validating user information"
 
-mysql -h -uroot 172.31.29.134 -pRoboShop@1 < /app/db/master-data.sql &>> $LOGFILE
+mysql -h -uroot mysql.sadhusundar.xyz -pRoboShop@1 < /app/db/master-data.sql &>> $LOGFILE
 
 VALIDATE $? "validating master data"
 
