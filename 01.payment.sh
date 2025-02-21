@@ -1,37 +1,36 @@
 #!/bin/bash
 
-DATE=$(date +%F)
-LOGSDIR=/tmp
-# /home/centos/shellscript-logs/script-name-date.log
-SCRIPT_NAME=$0
-LOGFILE=$LOGSDIR/$0-$DATE.log
 USERID=$(id -u)
+TIMESTAMP=$(date +%F-%H-%M-%S)
+SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
+LOGFILE=/tmp/$SCRIPT_NAME-$TIMESTAMP.log
 R="\e[31m"
 G="\e[32m"
-N="\e[0m"
 Y="\e[33m"
-
-if [ $USERID -ne 0 ];
-then
-    echo -e "$R ERROR:: Please run this script with root access $N"
-    exit 1
-fi
+N="\e[0m"
 
 VALIDATE(){
-    if [ $1 -ne 0 ];
-    then
-        echo -e "$2 ... $R FAILURE $N"
+   if [ $1 -ne 0 ]
+   then
+        echo -e "$2...$R FAILURE $N"
         exit 1
     else
-        echo -e "$2 ... $G SUCCESS $N"
+        echo -e "$2...$G SUCCESS $N"
     fi
 }
 
-yum install python36 gcc python3-devel -y &>>$LOGFILE
+if [ $USERID -ne 0 ]
+then
+    echo "Please run this script with root access."
+    exit 1 # manually exit if error comes.
+else
+    echo "You are super user."
+fi
 
-VALIDATE $? "Installing python"
+dnf install python3.11 gcc python3-devel -y &>> $LOGFILE
+VALIDATE $? "Installing Python"
 
-useradd roboshop &>>$LOGFILE
+id roboshop &>> $LOGFILE
 if [ $? -ne 0 ]
 then
     useradd roboshop &>> $LOGFILE
@@ -43,36 +42,29 @@ fi
 rm -rf /app &>> $LOGFILE
 VALIDATE $? "clean up existing directory"
 
-mkdir /app  &>>$LOGFILE
+mkdir -p /app &>> $LOGFILE
+VALIDATE $? "Creating app directory"
 
-curl -L -o /tmp/payment.zip https://roboshop-builds.s3.amazonaws.com/payment.zip &>>$LOGFILE
+curl -L -o /tmp/payment.zip https://roboshop-builds.s3.amazonaws.com/payment.zip &>> $LOGFILE
+VALIDATE $? "Downloading shipping application"
 
-VALIDATE $? "Downloading artifact"
-
-cd /app &>>$LOGFILE
-
+cd /app  &>> $LOGFILE
 VALIDATE $? "Moving to app directory"
 
-unzip /tmp/payment.zip &>>$LOGFILE
+unzip /tmp/payment.zip &>> $LOGFILE
+VALIDATE $? "Extracting payment application"
 
-VALIDATE $? "unzip artifact"
-
-pip3.6 install -r requirements.txt &>>$LOGFILE
-
+pip3.11 install -r requirements.txt &>> $LOGFILE
 VALIDATE $? "Installing dependencies"
 
-cp /home/centos/currect-project/payment.service /etc/systemd/system/payment.service &>>$LOGFILE
+cp /home/centos/currect-project/payment.service /etc/systemd/system/payment.service &>> $LOGFILE
+VALIDATE $? "Copying payment service"
 
-VALIDATE $? "copying payment service"
+systemctl daemon-reload &>> $LOGFILE
+VALIDATE $? "Daemon reload"
 
-systemctl daemon-reload &>>$LOGFILE
+systemctl enable payment &>> $LOGFILE
+VALIDATE $? "Enable payment"
 
-VALIDATE $? "daemon-reload"
-
-systemctl enable payment  &>>$LOGFILE
-
-VALIDATE $? "enable payment"
-
-systemctl start payment &>>$LOGFILE
-
-VALIDATE $? "starting payment"
+systemctl start payment &>> $LOGFILE
+VALIDATE $? "Start payment"
