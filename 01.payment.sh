@@ -54,7 +54,7 @@ VALIDATE $? "Moving to app directory"
 unzip /tmp/payment.zip &>> $LOGFILE
 VALIDATE $? "Extracting payment application"
 
-pip3.11 install -r requirements.txt &>> $LOGFILE
+pip3.11 install -r requirements.txt 
 VALIDATE $? "Installing dependencies"
 
 cp /home/centos/currect-project/payment.service /etc/systemd/system/payment.service &>> $LOGFILE
